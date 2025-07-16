@@ -1,0 +1,45 @@
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+from fastapi.middleware.cors import CORSMiddleware
+import joblib
+import numpy as np
+
+# Load the model
+model = joblib.load("best_model.pkl")
+
+# Create app
+app = FastAPI(title="Freelance Salary Predictor")
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for testing; restrict in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Define input data model
+class SalaryInput(BaseModel):
+    experience_level: str = Field(..., example="SE")
+    employment_type: str = Field(..., example="FT")
+    job_title: str = Field(..., example="Data Scientist")
+    employee_residence: str = Field(..., example="US")
+    remote_ratio: int = Field(..., ge=0, le=100, example=100)
+    company_location: str = Field(..., example="US")
+    company_size: str = Field(..., example="M")
+
+# Prediction endpoint
+@app.post("/predict")
+def predict(data: SalaryInput):
+    input_data = [[
+        data.experience_level,
+        data.employment_type,
+        data.job_title,
+        data.employee_residence,
+        data.remote_ratio,
+        data.company_location,
+        data.company_size
+    ]]
+    prediction = model.predict(input_data)
+    return {"predicted_salary_usd": round(prediction[0], 2)}
