@@ -27,9 +27,28 @@ class _HomePageState extends State<HomePage> {
     "Data Scientist", "Data Engineer", "ML Engineer", // ...add more as needed
   ];
   final locations = ["US", "GB", "IN", "DE", "CA"]; // Example country codes
-  final companySizes = ["S", "M", "L"];
-  final experienceLevels = ["EN", "MI", "SE", "EX"];
-  final employmentTypes = ["FT", "PT", "CT", "FL"];
+  final companySizes = {
+    "S": "SMALL",
+    "M": "MEDIUM",
+    "L": "LARGE"
+  };
+  final experienceLevels = {
+    "EN": "Entry level",
+    "MI": "Mid/Intermediate level",
+    "SE": "Senior",
+    "EX": "Executive level"
+  };
+  final employmentTypes = {
+    "FT": "Full-time",
+    "PT": "Part-time",
+    "CT": "Contractor",
+    "FL": "Freelancer"
+  };
+  final remoteRatios = {
+    0: "On-Site",
+    50: "Half-Remote",
+    100: "Full-Remote"
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +62,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               DropdownButtonFormField<String>(
                 value: experienceLevel,
-                items: experienceLevels
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                items: experienceLevels.entries
+                    .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
                     .toList(),
                 onChanged: (val) => setState(() => experienceLevel = val),
                 decoration: InputDecoration(labelText: "Experience Level"),
@@ -52,8 +71,8 @@ class _HomePageState extends State<HomePage> {
               ),
               DropdownButtonFormField<String>(
                 value: employmentType,
-                items: employmentTypes
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                items: employmentTypes.entries
+                    .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
                     .toList(),
                 onChanged: (val) => setState(() => employmentType = val),
                 decoration: InputDecoration(labelText: "Employment Type"),
@@ -88,8 +107,8 @@ class _HomePageState extends State<HomePage> {
               ),
               DropdownButtonFormField<String>(
                 value: companySize,
-                items: companySizes
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                items: companySizes.entries
+                    .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
                     .toList(),
                 onChanged: (val) => setState(() => companySize = val),
                 decoration: InputDecoration(labelText: "Company Size"),
@@ -100,14 +119,15 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Remote Ratio: $remoteRatio"),
-                    Slider(
-                      value: remoteRatio.toDouble(),
-                      min: 0,
-                      max: 100,
-                      divisions: 100,
-                      label: "$remoteRatio",
-                      onChanged: (val) => setState(() => remoteRatio = val.toInt()),
+                    Text("Remote Ratio: ${remoteRatios[remoteRatio]!}"),
+                    DropdownButtonFormField<int>(
+                      value: remoteRatio,
+                      items: remoteRatios.entries
+                          .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
+                          .toList(),
+                      onChanged: (val) => setState(() => remoteRatio = val!),
+                      decoration: InputDecoration(labelText: "Remote Ratio"),
+                      validator: (val) => val == null ? "Required" : null,
                     ),
                   ],
                 ),
