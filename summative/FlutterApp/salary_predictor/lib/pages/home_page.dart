@@ -11,13 +11,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _formKey = GlobalKey<FormState>();
-  final experienceController = TextEditingController();
-  final employmentController = TextEditingController();
-  final companySizeController = TextEditingController();
-  final remoteRatioController = TextEditingController();
-  final yearController = TextEditingController();
+
+  // Dropdown values
+  String? experienceLevel;
+  String? employmentType;
+  String? jobTitle;
+  String? employeeResidence;
+  String? companyLocation;
+  String? companySize;
+  int remoteRatio = 0;
 
   String? error;
+
+  final jobTitles = [
+    "Data Scientist", "Data Engineer", "ML Engineer", // ...add more as needed
+  ];
+  final locations = ["US", "GB", "IN", "DE", "CA"]; // Example country codes
+  final companySizes = ["S", "M", "L"];
+  final experienceLevels = ["EN", "MI", "SE", "EX"];
+  final employmentTypes = ["FT", "PT", "CT", "FL"];
 
   @override
   Widget build(BuildContext context) {
@@ -29,21 +41,88 @@ class _HomePageState extends State<HomePage> {
           key: _formKey,
           child: ListView(
             children: [
-              buildField("Experience Level (1-4)", experienceController),
-              buildField("Employment Type (1-4)", employmentController),
-              buildField("Company Size (1-3)", companySizeController),
-              buildField("Remote Ratio (0-100)", remoteRatioController),
-              buildField("Work Year", yearController),
-              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                value: experienceLevel,
+                items: experienceLevels
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (val) => setState(() => experienceLevel = val),
+                decoration: InputDecoration(labelText: "Experience Level"),
+                validator: (val) => val == null ? "Required" : null,
+              ),
+              DropdownButtonFormField<String>(
+                value: employmentType,
+                items: employmentTypes
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (val) => setState(() => employmentType = val),
+                decoration: InputDecoration(labelText: "Employment Type"),
+                validator: (val) => val == null ? "Required" : null,
+              ),
+              DropdownButtonFormField<String>(
+                value: jobTitle,
+                items: jobTitles
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (val) => setState(() => jobTitle = val),
+                decoration: InputDecoration(labelText: "Job Title"),
+                validator: (val) => val == null ? "Required" : null,
+              ),
+              DropdownButtonFormField<String>(
+                value: employeeResidence,
+                items: locations
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (val) => setState(() => employeeResidence = val),
+                decoration: InputDecoration(labelText: "Employee Residence"),
+                validator: (val) => val == null ? "Required" : null,
+              ),
+              DropdownButtonFormField<String>(
+                value: companyLocation,
+                items: locations
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (val) => setState(() => companyLocation = val),
+                decoration: InputDecoration(labelText: "Company Location"),
+                validator: (val) => val == null ? "Required" : null,
+              ),
+              DropdownButtonFormField<String>(
+                value: companySize,
+                items: companySizes
+                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                    .toList(),
+                onChanged: (val) => setState(() => companySize = val),
+                decoration: InputDecoration(labelText: "Company Size"),
+                validator: (val) => val == null ? "Required" : null,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Remote Ratio: $remoteRatio"),
+                    Slider(
+                      value: remoteRatio.toDouble(),
+                      min: 0,
+                      max: 100,
+                      divisions: 100,
+                      label: "$remoteRatio",
+                      onChanged: (val) => setState(() => remoteRatio = val.toInt()),
+                    ),
+                  ],
+                ),
+              ),
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final prediction = await ApiService.predict({
-                      "experience_level": int.parse(experienceController.text),
-                      "employment_type": int.parse(employmentController.text),
-                      "company_size": int.parse(companySizeController.text),
-                      "remote_ratio": int.parse(remoteRatioController.text),
-                      "work_year": int.parse(yearController.text),
+                      "experience_level": experienceLevel,
+                      "employment_type": employmentType,
+                      "job_title": jobTitle,
+                      "employee_residence": employeeResidence,
+                      "remote_ratio": remoteRatio,
+                      "company_location": companyLocation,
+                      "company_size": companySize,
                     });
 
                     if (prediction != null) {
@@ -70,23 +149,6 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildField(String label, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(labelText: label, border: OutlineInputBorder()),
-        keyboardType: TextInputType.number,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Required';
-          }
-          return null;
-        },
       ),
     );
   }
