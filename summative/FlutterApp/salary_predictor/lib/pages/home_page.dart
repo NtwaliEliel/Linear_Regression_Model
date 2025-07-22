@@ -53,7 +53,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Salary Predictor")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Salary Predictor", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -133,6 +139,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 2,
+                ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final prediction = await ApiService.predict({
@@ -159,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                     }
                   }
                 },
-                child: const Text("Predict"),
+                child: const Text("Predict", style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               if (error != null)
                 Padding(
