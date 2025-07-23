@@ -12,7 +12,7 @@ This project uses an AI model to predict salaries and support informed decisions
 
 ## 🎥 YouTube Video Demo
 
-[Watch Demo (max 5 min)](https://youtube.com/live/zonmxU2Z54Q?feature=share)
+[Watch Demo (max 5 min)](https://www.youtube.com/live/zonmxU2Z54Q)
 ## 📱 How to Run the Flutter Mobile App
 
 1. **Clone the Repository**  
