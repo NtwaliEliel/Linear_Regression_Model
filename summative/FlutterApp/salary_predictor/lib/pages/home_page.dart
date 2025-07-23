@@ -55,8 +55,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Salary Predictor", style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        title: const Text("Salary Predictor", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.black,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
